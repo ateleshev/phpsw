@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+NAME=$(basename $0)
+SCRIPT=$(readlink -f $0)
+SCRIPT_PATH=$(dirname $SCRIPT)
+
+DESC="PHP Switcher"
+AUTHOR="Artem Teleshev"
+EMAIL="artem.teleshev@gmail.com"
+SITE="http//phpsw.net"
+VERSION="1.0.1"
+
+# Include {{{
+  # Environment
+  . "$SCRIPT_PATH/environment"
+
+  # Functions
+  . "$SCRIPT_PATH/functions"
+# }}}
+
+phpsw_help() {
+  echo "-------------------------------------------------"
+  echo "Help: $DESC [$NAME-$VERSION]"
+  echo "-------------------------------------------------"
+  echo "Usage: $NAME {help|about}"
+  echo "-------------------------------------------------"
+}
+
+phpsw_about() {
+  echo "-------------------------------------------------"
+  echo "About: $DESC [$NAME-$VERSION]"
+  echo "-------------------------------------------------"
+  echo " Version: $VERSION"
+  echo "  Author: $AUTHOR"
+  echo "   Email: $EMAIL"
+  echo "    Site: $SITE"
+  echo "-------------------------------------------------"
+}
+
+case "$1" in # {{{
+  help)
+    phpsw_help
+    ;;
+  about)
+    phpsw_about
+    ;;
+  *)
+    echo "Usage: $NAME {help|about}"
+    exit 1
+    ;;
+esac # }}}
+
