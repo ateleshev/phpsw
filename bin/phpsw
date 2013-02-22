@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+NAME=$(basename $0)
+USAGE="bind|download|install|cli|fpm|help|about"
+SCRIPT=$(readlink -f $0)
+DIR=$(dirname $SCRIPT)
+PROJECT=$(dirname $DIR)
+
+# Includes {{{
+  . "$PROJECT/etc/environments/default"
+# }}}
+
+phpsw_bind() { # {{{
+  EXECUTE="${PATH_TO[BIN]}/$NAME-bind"
+  $EXECUTE $1
+} # }}}
+
+phpsw_download() { # {{{
+  EXECUTE="${PATH_TO[BIN]}/$NAME-download"
+  $EXECUTE $1
+} # }}}
+
+phpsw_install() { # {{{
+  EXECUTE="${PATH_TO[BIN]}/$NAME-install"
+  $EXECUTE $1
+} # }}}
+
+phpsw_cli() {
+  echo "CLI"
+}
+
+phpsw_fpm() {
+  echo "FPM"
+}
+
+
+phpsw_help() {
+  echo "-------------------------------------------------"
+  echo "Help: $DESC [$NAME-$VERSION]"
+  echo "-------------------------------------------------"
+  echo "Usage: $NAME {$USAGE}"
+  echo "-------------------------------------------------"
+}
+
+phpsw_about() {
+  echo "-------------------------------------------------"
+  echo "About: $DESC [$NAME-$VERSION]"
+  echo "-------------------------------------------------"
+  echo " Version: $VERSION"
+  echo "  Author: $AUTHOR"
+  echo "   Email: $EMAIL"
+  echo "    Site: $SITE"
+  echo "-------------------------------------------------"
+}
+
+case "$1" in # {{{
+  bind)
+    phpsw_bind $2
+    ;;
+  download)
+    phpsw_download
+    ;;
+  install)
+    phpsw_install
+    ;;
+  cli)
+    phpsw_cli
+    ;;
+  fpm)
+    phpsw_fpm
+    ;;
+  help)
+    phpsw_help
+    ;;
+  about)
+    phpsw_about
+    ;;
+  *)
+    echo "Usage: $NAME {$USAGE}"
+    exit 1
+    ;;
+esac # }}}
+

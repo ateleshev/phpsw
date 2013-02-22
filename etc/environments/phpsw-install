@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+PHP_PREFIX="/usr/local/lib/php$VERSION"
+PHP_EXEC_PREFIX="$PHP_PREFIX"
+PHP_CONFIG_FILE_SCAN_DIR="$PHP_PREFIX/etc/php"
+
+PHP_CONFIGURE=" \
+--prefix=$PHP_PREFIX \
+--exec-prefix=$PHP_EXEC_PREFIX \
+--with-config-file-scan-dir=$PHP_CONFIG_FILE_SCAN_DIR \
+--disable-ipv6 \
+--enable-sockets \
+--with-curl \
+--enable-soap \
+--enable-libxml \
+--with-xsl \
+--enable-zip \
+--with-zlib \
+--enable-ftp \
+--enable-fpm \
+--with-mysqli=mysqlnd \
+--with-pdo-mysql=mysqlnd \
+--enable-shmop \
+--enable-calendar \
+--enable-mbstring \
+--with-openssl \
+--with-gd \
+--enable-gd-native-ttf \
+--enable-gd-jis-conv \
+--with-jpeg-dir \
+--with-png-dir \
+--with-mhash \
+--with-freetype-dir \
+--enable-exif \
+--with-layout=GNU \
+--with-regex=php \
+--enable-maintainer-zts \
+--with-zend-vm=CALL \
+"
+
+

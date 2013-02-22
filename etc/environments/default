@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+DESC="PHP Switcher"
+AUTHOR="Artem Teleshev"
+EMAIL="artem.teleshev@gmail.com"
+SITE="http//phpsw.net"
+VERSION="1.0.1"
+
+# Define default fields separator
+FS="\n"
+
+STATUS_OK="OK"
+STATUS_ERROR="Error"
+
+EXIT_STATUS_OK=0
+EXIT_STATUS_ERROR=-1
+
+# Declare array "PATH TO" {{{
+  declare -A PATH_TO
+  PATH_TO[BIN]=$(readlink -f "$PROJECT/bin")
+  PATH_TO[ETC]=$(readlink -f "$PROJECT/etc")
+  PATH_TO[LIB]=$(readlink -f "$PROJECT/lib")
+  PATH_TO[SRC]=$(readlink -f "$PROJECT/src")
+  PATH_TO[VAR]=$(readlink -f "$PROJECT/var")
+# }}}
+
+# Declare array "COMMANDS" {{{
+  declare -A COMMANDS
+  COMMANDS[LS]=$(which ls)
+  COMMANDS[PS]=$(which ps)
+  COMMANDS[TR]=$(which tr)
+  COMMANDS[WC]=$(which wc)
+  COMMANDS[CAT]=$(which cat)
+  COMMANDS[AWK]=$(which awk)
+  COMMANDS[SED]=$(which sed)
+  COMMANDS[GREP]=$(which grep)
+  COMMANDS[KILL]=$(which kill)
+  COMMANDS[SORT]=$(which sort)
+  COMMANDS[WGET]=$(which wget)
+# }}}
+
+# Check array "COMMANDS" {{{
+  for KEY in "${!COMMANDS[@]}"
+  do
+    if [ ! -x "${COMMANDS[$KEY]}" ] ; then
+      echo "Can't find command: '$KEY'. You must have access on execute this command, for work this script."
+      exit $EXIT_STATUS_ERROR
+    fi
+  done
+# }}}
+
+# Declare array "OPTIONS" {{{
+  declare -A OPTIONS
+# }}}
+

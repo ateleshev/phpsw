@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+COMMANDS[SSH]=$(which ssh)
+OPTIONS[SSH]="-f -n -N -C"
+
+# ssh options
+# -f | Requests ssh to go to background just before command execution. 
+# -n | Redirects stdin from /dev/null (actually, prevents reading from stdin).  This must be used when ssh is run in the background.
+# -N | Do not execute a remote command.
+# -C | Compression of all data.
+
+if [ ! -f ${COMMANDS[SSH]} ] ; then
+  echo "Can't find SSH Client. You need to install this package."
+  exit $EXIT_STATUS_ERROR
+fi
+
+SETTINGS_PATTERN=".*\/\([^@]*@[^:]*\)*:\(.*\)$"
+ALLOWED_FORWARDINGS='socks:\|local:\|remote:'
+FORWARDINGS_REPLACEMENT="s/^socks:/-D /g;s/^local:/-L /g;s/^remote:/-R /g"
+

@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+NAME=$(basename $0)
+USAGE="start|stop|restart|status|settings|help"
+SCRIPT=$(readlink -f $0)
+DIR=$(dirname $SCRIPT)
+PROJECT=$(dirname $DIR)
+
+# Includes {{{
+  . "$PROJECT/etc/environments/default"
+  . "$PROJECT/etc/environments/$NAME"
+  . "$PROJECT/etc/functions/$NAME"
+# }}}
+
+SETTINGS_PATH=$(readlink -f "${PATH_TO[ETC]}/$NAME")
+
+ssh_bind_start() { #{{{
+  ssh_bind_is_root
+  ssh_bind_has_settings
+  if [ "$(ssh_bind_count_ps)" == "0" ] ; then
+    echo -n "Starting $NAME "
+    ssh_bind_get_forwardings | while read FORWARDING ; do
+      ssh_bind_create_ssh_forwarding "$FORWARDING"
+      echo -n "."
+    done
+    echo " [$STATUS_OK]"
+  else
+    echo "Is already found $DESC in Your system."
+    ssh_bind_status
+  fi
+} # }}}
+
+ssh_bind_stop() { # {{{
+  ssh_bind_is_root
+  ssh_bind_has_settings
+  if [ "$(ssh_bind_count_ps)" == "0" ] ; then
+    echo "$NAME was not started"
+  else
+    echo -n "Stoping $NAME ... ["
+    $KILL_COMMAND $(ssh_bind_get_ps_list) && echo -n "$STATUS_OK" || echo -n "$STATUS_ERROR"
+    echo "]"
+  fi
+} # }}}
+
+ssh_bind_status() { # {{{
+  ssh_bind_has_settings
+  if [ "$(ssh_bind_count_ps)" == "0" ] ; then
+    echo "$NAME was not started"
+  else
+    echo "Found started processes: $(ssh_bind_get_ps_list)"
+    ssh_bind_get_ps
+  fi
+} # }}}
+
+ssh_bind_settings() { # {{{
+  ssh_bind_has_settings
+  ssh_bind_get_forwardings | while read FORWARDING ; do
+    ssh_bind_show_command_create_ssh_forwarding "$FORWARDING"
+  done
+} # }}}
+
+ssh_bind_help() { # {{{
+  HELP_SEPARATOR="+----------+--------------------------------------------+"
+  echo " Author: $AUTHOR"
+  echo " Version: $VERSION"
+  echo "  $HELP_SEPARATOR"
+  echo "  | start    | initialize $DESC"
+  echo "  $HELP_SEPARATOR"
+  echo "  | stop     | shutdown $DESC"
+  echo "  $HELP_SEPARATOR"
+  echo "  | restart  | restart $DESC"
+  echo "  $HELP_SEPARATOR"
+  echo "  | status   | show status of $DESC"
+  echo "  $HELP_SEPARATOR"
+  echo "  | settings | show settings of $DESC"
+  echo "  $HELP_SEPARATOR"
+  echo "  | help     | show this message"
+  echo "  $HELP_SEPARATOR"
+} # }}}
+
+case "$1" in # {{{
+  start)
+    ssh_bind_start
+    ;;
+  stop)
+    ssh_bind_stop
+    ;;
+  restart)
+    ssh_bind_stop && sleep 1 && ssh_bind_start
+    ;;
+  status)
+    ssh_bind_status
+    ;;
+  settings)
+    ssh_bind_settings
+    ;;
+  help)
+    ssh_bind_help
+    ;;
+  *)
+    echo "Usage: $NAME {$USAGE}"
+    exit $EXIT_STATUS_ERROR
+    ;;
+esac # }}}
+
+exit $EXIT_STATUS_OK
+

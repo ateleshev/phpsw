@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+
+# Include {{{
+  # Environment
+  . "$SCRIPT_PATH/environment"
+
+  # Functions
+  . "$SCRIPT_PATH/functions"
+# }}}
+
+phpsw_download() {
+  echo "Download"
+}
+
+phpsw_install() {
+  echo "INSTALL"
+}
+
+phpsw_cli() {
+  echo "CLI"
+}
+
+phpsw_fpm() {
+  echo "FPM"
+}
+
+
+phpsw_help() {
+  echo "-------------------------------------------------"
+  echo "Help: $DESC [$NAME-$VERSION]"
+  echo "-------------------------------------------------"
+  echo "Usage: $NAME {$USAGE}"
+  echo "-------------------------------------------------"
+}
+
+phpsw_about() {
+  echo "-------------------------------------------------"
+  echo "About: $DESC [$NAME-$VERSION]"
+  echo "-------------------------------------------------"
+  echo " Version: $VERSION"
+  echo "  Author: $AUTHOR"
+  echo "   Email: $EMAIL"
+  echo "    Site: $SITE"
+  echo "-------------------------------------------------"
+}
+
+case "$1" in # {{{
+  download)
+    phpsw_download
+    ;;
+  install)
+    phpsw_install
+    ;;
+  cli)
+    phpsw_cli
+    ;;
+  fpm)
+    phpsw_fpm
+    ;;
+  help)
+    phpsw_help
+    ;;
+  about)
+    phpsw_about
+    ;;
+  *)
+    echo "Usage: $NAME {$USAGE}"
+    exit 1
+    ;;
+esac # }}}
+

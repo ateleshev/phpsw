@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#
+# @author  Artem Teleshev
+# @email   artem.teleshev@gmail.com
+# @site    http//phpsw.net
+
+ssh_bind_is_root()  { # {{{
+  if [ "$UID" != 0 ] ; then
+    echo "Only super user have access to this action"
+    exit $EXIT_STATUS_ERROR
+  fi
+} # }}}
+
+ssh_bind_get_settings() { # {{{
+  $GREP_COMMAND -RH "^\($ALLOWED_FORWARDINGS\)" $SETTINGS_PATH | $SED_COMMAND -n "s|$SETTINGS_PATTERN|\1|p" | $SORT_COMMAND -u
+} # }}}
+
+ssh_bind_count_settings() { # {{{
+  ssh_bind_get_settings | $WC_COMMAND -l | $TR_COMMAND -d " "
+} # }}}
+
+ssh_bind_has_settings() { # {{{
+  if [ "$(ssh_bind_count_settings)" == "0" ] ; then
+    echo "Can't find settings for $NAME"
+    exit $EXIT_STATUS_ERROR
+  fi
+} # }}}
+
+ssh_bind_get_forwardings() { # {{{
+  $GREP_COMMAND -RH "^\($ALLOWED_FORWARDINGS\)" $SETTINGS_PATH | $SED_COMMAND -n "s|$SETTINGS_PATTERN|\2 \1|p" | $SORT_COMMAND -u | $SED_COMMAND "$FORWARDINGS_REPLACEMENT"
+} # }}}
+
+ssh_bind_get_forwardings_pattern() { # {{{
+  ssh_bind_get_forwardings | $AWK_COMMAND '{print "\\("$1"\\)\\|"}' | $TR_COMMAND -d "\n" | $SED_COMMAND 's/\\|$//g'
+} # }}}
+
+ssh_bind_show_command_create_ssh_forwarding() { # {{{
+  echo "$COMMAND $COMMAND_OPTIONS $1"
+} # }}}
+
+ssh_bind_create_ssh_forwarding() { # {{{
+  $COMMAND $COMMAND_OPTIONS $1
+} # }}}
+
+ssh_bind_get_ps() { # {{{
+  $PS_COMMAND "ax" | $GREP_COMMAND "$COMMAND $COMMAND_OPTIONS " | $GREP_COMMAND -v "$GREP_COMMAND" | $GREP_COMMAND "$(ssh_bind_get_forwardings_pattern)"
+} # }}}
+
+ssh_bind_count_ps() { # {{{
+  ssh_bind_get_ps | $WC_COMMAND -l | $TR_COMMAND -d " "
+} # }}}
+
+ssh_bind_get_ps_list() { # {{{
+  ssh_bind_get_ps | $AWK_COMMAND '{print $1}' | $TR_COMMAND "\n" " "
+} # }}}
